@@ -22,8 +22,8 @@ Dự án được xây dựng nhằm đáp ứng các tiêu chuẩn về mã ngu
 ├── config/
 │   └── config.py               # Chứa các tham số cấu hình (ngưỡng conf, đường dẫn...)
 ├── models/                     # Thư mục chứa trọng số mô hình (weights)
-│   ├── detect_card.pt          # Model YOLO phát hiện thẻ (PyTorch)
-│   ├── detect_field.pt         # Model YOLO phát hiện trường thông tin
+│   ├── detect_card.onnx          # Model YOLO phát hiện thẻ (PyTorch)
+│   ├── detect_field.onnx        # Model YOLO phát hiện trường thông tin
 ├── main.py                     # File chạy server FastAPI (API Endpoints)
 ├── ocr.py                      # Core logic xử lý ảnh, pipeline nhận diện
 ├── requirements.txt            # Danh sách thư viện Python
