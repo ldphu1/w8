@@ -41,15 +41,12 @@ Hệ thống không yêu cầu huấn luyện lại từ đầu mà tận dụng
 ## 4. Cài đặt
 
 ```bash
-# 1. Clone repository
 git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
 cd your-repo-name
 
-# 2. Tạo và kích hoạt môi trường ảo (tuỳ chọn nhưng khuyến nghị)
 python -m venv venv
 source venv/bin/activate  # Trên Windows dùng: venv\Scripts\activate
 
-# 3. Cài đặt thư viện
 pip install -r requirements.txt
 ```
 
