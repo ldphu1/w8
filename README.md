@@ -31,7 +31,14 @@ Dự án được xây dựng nhằm đáp ứng các tiêu chuẩn về mã ngu
 └── README.md                   # Tài liệu hướng dẫn
 ```
 
-## 3. Cài đặt
+## 3. Mô hình sử dụng
+
+Hệ thống không yêu cầu huấn luyện lại từ đầu mà tận dụng sức mạnh của các mô hình đã được Pre-trained, giúp dễ dàng triển khai:
+
+* **Card & Field Detection:** Sử dụng mô hình **YOLOv8n** fine-tuned trên tập dữ liệu giấy tờ tùy thân.
+* **Text Recognition (OCR):** Sử dụng kiến trúc **VGG_Transformer** với trọng số pre-trained được cung cấp bởi thư viện `vietocr`, tối ưu hóa rất tốt cho việc nhận dạng ngôn ngữ tiếng Việt có dấu.
+  
+## 4. Cài đặt
 
 ```bash
 # 1. Clone repository
@@ -46,10 +53,15 @@ source venv/bin/activate  # Trên Windows dùng: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## 4. Inference
+## 5. Inference
 
 Để khởi động Server API, chạy lệnh sau:
 
 ```bash
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
+
+## 5. Benchmark
+
+Test trên RTX3050:
+Thời gian xử lý trung bình (End-to-End): ~1s / ảnh
