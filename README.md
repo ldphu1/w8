@@ -29,3 +29,27 @@ Dự án được xây dựng nhằm đáp ứng các tiêu chuẩn về mã ngu
 ├── requirements.txt            # Danh sách thư viện Python
 ├── Dockerfile                  # Cấu hình đóng gói Docker
 └── README.md                   # Tài liệu hướng dẫn
+```
+
+## 3. Cài đặt
+
+```bash
+# 1. Clone repository
+git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
+cd your-repo-name
+
+# 2. Tạo và kích hoạt môi trường ảo (tuỳ chọn nhưng khuyến nghị)
+python -m venv venv
+source venv/bin/activate  # Trên Windows dùng: venv\Scripts\activate
+
+# 3. Cài đặt thư viện
+pip install -r requirements.txt
+```
+
+## 4. Inference
+
+Để khởi động Server API, chạy lệnh sau:
+
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
