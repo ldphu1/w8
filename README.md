@@ -64,4 +64,7 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ## 5. Benchmark
 
 Test trên RTX3050:
+
 Thời gian xử lý trung bình (End-to-End): ~1s / ảnh
+
+Thời gian OCR: ~800ms / ảnh
