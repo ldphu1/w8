@@ -43,9 +43,7 @@ def four_point_transform(image, pts):
 
     M = cv2.getPerspectiveTransform(rect, dst)
     warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
-    cv2.imshow("warped", warped)
-    cv2.imshow("image.jpg", image)
-    cv2.waitKey(0)
+
     return warped
 
 class ocr:
@@ -62,6 +60,11 @@ class ocr:
         vietocr_config['device'] = self.device
 
         self.ocr = Predictor(vietocr_config)
+        self.ocr.model.eval()
+        self.ocr.model = torch.compile(
+            self.ocr.model,
+            mode="reduce-overhead"
+        )
 
     def warmup(self):
         dummy_img = np.zeros((640, 640, 3), dtype=np.uint8)
@@ -89,7 +92,6 @@ class ocr:
             "viet_ocr": {
                 "framework": "VietOCR",
                 "model_type": "vgg_transformer",
-                "device": self.device,
             }
         }
         return infor
@@ -132,8 +134,6 @@ class ocr:
             # Đóng các khe hở của viền
             kernel_close = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
             edged = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel_close, iterations=1)
-
-            cv2.imshow("Gradient Edged", edged)
 
             kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
             edged = cv2.morphologyEx(edged, cv2.MORPH_CLOSE, kernel)
@@ -190,9 +190,6 @@ class ocr:
         # fallback
         fallback = cv2.resize(crop, (960, 600))
 
-        cv2.imshow("Crop", crop)
-        cv2.waitKey(0)
-
         return fallback
 
     def inference(self, image):
@@ -225,24 +222,12 @@ class ocr:
         if not pil_images:
             raise ValueError("YOLO did not detect any valid fields (score >= 0.5)")
 
-        sents, probs = self.ocr.predict_batch(pil_images, return_prob=True)
+        with torch.inference_mode():
+                sents, probs = self.ocr.predict_batch(
+                    pil_images,
+                    return_prob=True
+                )
 
         if sents is not None and probs is not None:
             return sents, probs, filtered_classes
         raise ValueError("Cannot OCR")
-
-if __name__ == "__main__":
-    ocr = ocr()
-    image = cv2.imread("./data/z8008223059742_9483c35263599e9ed8aa059e34c7d6ab.jpg")
-
-    if image is not None:
-        try:
-            text, prob, cls = ocr.inference(image)
-            print("--- KẾT QUẢ OCR ---")
-            print(text, prob)
-
-        except Exception as e:
-            print(f"Lỗi khi nhận diện: {e}")
-    else:
-        print("Không thể đọc được ảnh, vui lòng kiểm tra lại đường dẫn!")
-
