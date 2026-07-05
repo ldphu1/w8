@@ -114,16 +114,16 @@ async def inference(file: UploadFile = File(...)):
             raise HTTPException(status_code=400, detail="Invalid image file")
 
         t1 = time.time()
-        results, classes = await run_in_threadpool(model.inference, image)
+        sents, probs, classes = await run_in_threadpool(model.inference, image)
         inference_time = round((time.time() - t1) * 1000, 2)
 
         t2 = time.time()
         ocr_lines = {}
         names = model.detect_field.names
-        for result, cls in zip(results, classes):
+        for sent, prob, cls in zip(sents, probs, classes):
             ocr_lines[names[int(cls)]] = {
-                "text": result[0],
-                "score": result[1],
+                "text": sent,
+                "score": prob,
             }
         postprocess_time = round((time.time() - t2) * 1000, 2)
 
@@ -148,7 +148,7 @@ async def inference(file: UploadFile = File(...)):
 
     except Exception as e:
         error_trace = traceback.format_exc()
-        inference_time = round((time.time() - t1) * 1000, 2)
+        inference_time = round((time.time() - start_time) * 1000, 2)
 
         print(f"\n[ERROR] Reques_ID: {req_id}")
         print(f"[ERROR] Traceback: {error_trace}")
