@@ -22,8 +22,8 @@ Dự án được xây dựng nhằm đáp ứng các tiêu chuẩn về mã ngu
 ├── config/
 │   └── config.py               # Chứa các tham số cấu hình (ngưỡng conf, đường dẫn...)
 ├── models/                     # Thư mục chứa trọng số mô hình (weights)
-│   ├── detect_card.pt          # Model YOLO phát hiện thẻ (PyTorch)
-│   ├── detect_field.pt         # Model YOLO phát hiện trường thông tin
+│   ├── detect_card.onnx          # Model YOLO phát hiện thẻ (PyTorch)
+│   ├── detect_field.onnx        # Model YOLO phát hiện trường thông tin
 ├── main.py                     # File chạy server FastAPI (API Endpoints)
 ├── ocr.py                      # Core logic xử lý ảnh, pipeline nhận diện
 ├── requirements.txt            # Danh sách thư viện Python
@@ -31,25 +31,37 @@ Dự án được xây dựng nhằm đáp ứng các tiêu chuẩn về mã ngu
 └── README.md                   # Tài liệu hướng dẫn
 ```
 
-## 3. Cài đặt
+## 3. Mô hình sử dụng
+
+Hệ thống không yêu cầu huấn luyện lại từ đầu mà tận dụng sức mạnh của các mô hình đã được Pre-trained, giúp dễ dàng triển khai:
+
+* **Card & Field Detection:** Sử dụng mô hình **YOLOv8n** fine-tuned trên tập dữ liệu giấy tờ tùy thân.
+* **Text Recognition (OCR):** Sử dụng kiến trúc **VGG_Transformer** với trọng số pre-trained được cung cấp bởi thư viện `vietocr`, tối ưu hóa rất tốt cho việc nhận dạng ngôn ngữ tiếng Việt có dấu.
+  
+## 4. Cài đặt
 
 ```bash
-# 1. Clone repository
 git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
 cd your-repo-name
 
-# 2. Tạo và kích hoạt môi trường ảo (tuỳ chọn nhưng khuyến nghị)
 python -m venv venv
 source venv/bin/activate  # Trên Windows dùng: venv\Scripts\activate
 
-# 3. Cài đặt thư viện
 pip install -r requirements.txt
 ```
 
-## 4. Inference
+## 5. Inference
 
 Để khởi động Server API, chạy lệnh sau:
 
 ```bash
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
+
+## 5. Benchmark
+
+Test trên RTX3050:
+
+Thời gian xử lý trung bình (End-to-End): ~1s / ảnh
+
+Thời gian OCR: ~800ms / ảnh
