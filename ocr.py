@@ -48,7 +48,7 @@ def four_point_transform(image, pts):
 
 class ocr:
     def __init__(self):
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.device = config.DEVICE
         self.load_model()
 
     def load_model(self):
@@ -110,7 +110,7 @@ class ocr:
         )
 
         # Padding
-        pad = 30
+        pad = config.CROP_PADDING
         h, w = image.shape[:2]
 
         x1 = max(0, x1 - pad)
@@ -181,7 +181,7 @@ class ocr:
                 if h_warp > w_warp:
                     warped = cv2.rotate(warped, cv2.ROTATE_90_CLOCKWISE)
 
-                warped = cv2.resize(warped, (960, 600))
+                warped = cv2.resize(warped, (config.WARP_WIDTH, config.WARP_HEIGHT))
                 return warped
 
         except Exception as e:
@@ -209,7 +209,7 @@ class ocr:
         filtered_classes = []
 
         for box, score, cls in zip(boxes, scores, classes):
-            if score < 0.5:
+            if score < config.FIELD_CONFIDENCE_THRES:
                 continue
             x1, y1, x2, y2 = map(int, box)
             field = cropped_img[y1:y2, x1:x2]

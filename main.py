@@ -7,6 +7,7 @@ import uvicorn
 import numpy as np
 from contextlib import asynccontextmanager
 import traceback
+from config import config
 
 from starlette.concurrency import run_in_threadpool
 
@@ -87,7 +88,7 @@ async def get_model_info():
 async def pre_img(img: UploadFile = File(...)):
     img_bytes = await img.read()
 
-    if len(img_bytes) > 5 * 1024 * 1024:
+    if len(img_bytes) > config.MAX_IMAGE_BYTES:
         raise HTTPException(status_code=400, detail="Image is too big")
 
     nparr = np.frombuffer(img_bytes, np.uint8)
@@ -165,4 +166,4 @@ async def inference(file: UploadFile = File(...)):
         )
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host=config.HOST, port=config.PORT, reload=True)
